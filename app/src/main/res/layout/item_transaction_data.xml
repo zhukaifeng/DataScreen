@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/linear_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_transaction"
+        android:layout_marginLeft="8px"
+        android:layout_marginRight="8px"
+        android:layout_marginTop="10px"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="商品名称"
+            android:textColor="@color/white"
+            android:textSize="6sp" />
+
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3px"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="价格(元)"
+            android:textColor="@color/white"
+            android:textSize="6sp" />
+
+        <TextView
+            android:id="@+id/tv_kg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3px"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="重量(kg)"
+            android:textColor="@color/white"
+            android:textSize="6sp" />
+
+        <TextView
+            android:id="@+id/tv_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3px"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="金额(元)"
+            android:textColor="@color/white"
+            android:textSize="6sp" />
+
+        <TextView
+            android:id="@+id/tv_transaction_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3px"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="交易时间"
+            android:textColor="@color/white"
+            android:textSize="6sp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
