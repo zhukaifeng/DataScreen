@@ -1,8 +1,13 @@
 package com.zkf.datascreen.home;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -10,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.BarLineChartBase;
@@ -49,6 +55,10 @@ import com.zkf.datascreen.model.LinkedData;
 import com.zkf.datascreen.model.MyBean;
 import com.zkf.datascreen.model.PriceData;
 import com.zkf.datascreen.model.TransactionData;
+import com.zkf.datascreen.network.ApiParams;
+import com.zkf.datascreen.network.ApiRequestTag;
+import com.zkf.datascreen.network.NetRequest;
+import com.zkf.datascreen.network.NetRequestResultListener;
 import com.zkf.datascreen.utils.DayAxisValueFormatter;
 import com.zkf.datascreen.utils.LineAxisValueFormatter;
 import com.zkf.datascreen.utils.LineChartManager;
@@ -62,13 +72,17 @@ import com.zkf.datascreen.view.CallCountFormatter;
 import com.zkf.datascreen.view.CallCountValueFormatter;
 import com.zkf.datascreen.view.XYMarkerView;
 
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindBitmap;
 import butterknife.BindView;
@@ -125,7 +139,7 @@ public class HomeActivity extends BaseActivity {
         initPriceData();
 
         iv_middle.setBackground(getDrawable(R.mipmap.bg_middle));
-
+        postMacToServer();
 
     }
 
@@ -649,4 +663,91 @@ public class HomeActivity extends BaseActivity {
         transactionAdapter.notifyDataSetChanged();
 
     }
+
+
+    private void postMacToServer(){
+        String url = ApiParams.API_HOST + "/dapingApp/cesip.action";
+        Map<String, String> params = new HashMap<>();
+        String mac = getLocalMacAddress(this);
+        if (!TextUtils.isEmpty(mac)){
+            params.put("ip", mac);
+        }
+        Log.d("zkf","mac:" + mac);
+        NetRequest.request(url, ApiRequestTag.DATA, params, new NetRequestResultListener() {
+            @Override
+            public void requestSuccess(int tag, String successResult) {
+                Log.d("zkf","successResult:" + successResult);
+
+            }
+
+            @Override
+            public void requestFailure(int tag, int code, String msg) {
+                Log.d("zkf","successResult:" + msg);
+
+            }
+        });
+    }
+
+
+    public static String getLocalMacAddress(Context context) {
+        String mac;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mac = getMachineHardwareAddress();
+        } else {
+            WifiManager wifi = (WifiManager) context
+                    .getSystemService(Context.WIFI_SERVICE);
+            WifiInfo info = wifi.getConnectionInfo();
+            mac = info.getMacAddress().replace(":", "");
+        }
+
+        return mac;
+    }
+
+    /**
+     * 获取设备的mac地址和IP地址（android6.0以上专用）
+     * @return
+     */
+    public static String getMachineHardwareAddress(){
+        Enumeration<NetworkInterface> interfaces = null;
+        try {
+            interfaces = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        String hardWareAddress = null;
+        NetworkInterface iF = null;
+        while (interfaces.hasMoreElements()) {
+            iF = interfaces.nextElement();
+            try {
+                hardWareAddress = bytesToString(iF.getHardwareAddress());
+                if(hardWareAddress == null) continue;
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+        if(iF != null && iF.getName().equals("wlan0")){
+            hardWareAddress = hardWareAddress.replace(":","");
+        }
+        return hardWareAddress ;
+    }
+
+    /***
+     * byte转为String
+     * @param bytes
+     * @return
+     */
+    private static String bytesToString(byte[] bytes){
+        if (bytes == null || bytes.length == 0) {
+            return null ;
+        }
+        StringBuilder buf = new StringBuilder();
+        for (byte b : bytes) {
+            buf.append(String.format("%02X:", b));
+        }
+        if (buf.length() > 0) {
+            buf.deleteCharAt(buf.length() - 1);
+        }
+        return buf.toString();
+    }
+
 }

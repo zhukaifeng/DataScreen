@@ -30,6 +30,13 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'com.jakewharton:butterknife:10.2.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.zhy:okhttputils:2.6.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.4.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'me.jessyan:autosize:0.9.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+    implementation 'me.jessyan:autosize:1.1.2'
+
+
 
 }
